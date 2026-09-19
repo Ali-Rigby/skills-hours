@@ -1,0 +1,677 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#1f6f68" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0f1312" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Skill Hours">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" href="icons/icon-192.png">
+<title>Skill Hours</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  color-scheme:light;
+  --page:#f3f5f4; --card:#ffffff; --card-2:#eaeeec; --line:#d9dfdc; --grid:#e6eae8;
+  --ink:#14201d; --ink-2:#4f5c58; --muted:#7d8985;
+  --accent:#1f6f68; --accent-ink:#ffffff; --accent-soft:#d9ecea;
+  --danger:#b3382f; --good:#0a7a3a;
+  --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a; --s4:#eda100; --s5:#e87ba4; --s6:#008300; --s7:#4a3aa7; --s8:#e34948;
+  --shadow:0 1px 2px rgba(20,32,29,.06), 0 6px 18px rgba(20,32,29,.05);
+  --f-display:"Sora","IBM Plex Sans",system-ui,sans-serif;
+  --f-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --page:#0f1312; --card:#171c1b; --card-2:#1f2624; --line:#2b3331; --grid:#242b29;
+    --ink:#eef2f0; --ink-2:#b7c1bd; --muted:#8a9591;
+    --accent:#4fb3a9; --accent-ink:#0f1312; --accent-soft:#1c3330;
+    --danger:#e5766c; --good:#4cc47a;
+    --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500; --s5:#d55181; --s6:#008300; --s7:#9085e9; --s8:#e66767;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 6px 18px rgba(0,0,0,.25);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --page:#0f1312; --card:#171c1b; --card-2:#1f2624; --line:#2b3331; --grid:#242b29;
+  --ink:#eef2f0; --ink-2:#b7c1bd; --muted:#8a9591;
+  --accent:#4fb3a9; --accent-ink:#0f1312; --accent-soft:#1c3330;
+  --danger:#e5766c; --good:#4cc47a;
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500; --s5:#d55181; --s6:#008300; --s7:#9085e9; --s8:#e66767;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 6px 18px rgba(0,0,0,.25);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.45;-webkit-font-smoothing:antialiased}
+.wrap{max-width:900px;margin:0 auto;padding-block:20px 56px;padding-inline:16px;display:grid;gap:20px}
+h1,h2,h3{margin:0;font-family:var(--f-display);text-wrap:balance}
+h2{font-size:15px;font-weight:600;letter-spacing:.01em}
+.eyebrow{font-size:11px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+button{font:inherit;color:inherit;cursor:pointer;border:1px solid var(--line);background:var(--card);border-radius:8px;padding:7px 12px;line-height:1.2}
+button:hover{border-color:var(--muted)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:600}
+button.primary:hover{filter:brightness(1.06)}
+button.ghost{border-color:transparent;background:transparent;color:var(--ink-2);padding:6px 8px}
+button.ghost:hover{background:var(--card-2);color:var(--ink)}
+button.danger{color:var(--danger)}
+button:disabled{opacity:.5;cursor:default}
+input,select{font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:8px;padding:7px 10px;min-width:0}
+input[type=number]{font-family:var(--f-mono)}
+
+/* header */
+.top{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
+.top .date{font-size:13px;color:var(--ink-2)}
+.hero{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.hero .big{font-family:var(--f-display);font-size:44px;font-weight:700;letter-spacing:-.02em;line-height:1}
+.hero .sub{color:var(--muted);font-size:13px}
+.title-row{display:flex;align-items:center;gap:10px}
+.title-row h1{font-size:20px;font-weight:700;letter-spacing:-.01em}
+.pill{font-size:11px;font-weight:600;padding:2px 8px;border-radius:999px;background:var(--accent-soft);color:var(--accent);letter-spacing:.02em}
+.pill.local{background:var(--card-2);color:var(--ink-2)}
+
+/* running timer banner */
+.timerbar{display:none;align-items:center;gap:14px;background:var(--accent);color:var(--accent-ink);border-radius:12px;padding:14px 18px;box-shadow:var(--shadow)}
+.timerbar.on{display:flex;flex-wrap:wrap}
+.timerbar .dot{width:10px;height:10px;border-radius:50%;background:currentColor;animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.timerbar .clock{font-family:var(--f-mono);font-size:26px;font-weight:500;font-variant-numeric:tabular-nums;letter-spacing:.02em}
+.timerbar .what{font-weight:600}
+.timerbar .grow{flex:1}
+.timerbar button{background:rgba(255,255,255,.18);border-color:transparent;color:inherit;font-weight:600}
+.timerbar button:hover{background:rgba(255,255,255,.3)}
+
+/* cards */
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+.card-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+.card-head .right{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+
+/* skill rows */
+.rows{display:grid;gap:2px}
+.row{display:grid;grid-template-columns:14px 1fr auto;grid-template-areas:"dot name actions" "dot meta actions" "dot bar actions";column-gap:12px;row-gap:5px;align-items:center;padding:10px 6px;border-radius:10px}
+.row:hover{background:var(--card-2)}
+.row.active{background:var(--accent-soft)}
+.row .sw{grid-area:dot;width:12px;height:12px;border-radius:3px;background:var(--c)}
+.row .name{grid-area:name;font-weight:600}
+.row .meta{grid-area:meta;display:flex;gap:12px;flex-wrap:wrap;font-size:12.5px;color:var(--ink-2)}
+.row .meta b{color:var(--ink);font-weight:500}
+.row .bar{grid-area:bar;height:5px;border-radius:3px;background:var(--card-2);overflow:hidden;max-width:360px}
+.row:hover .bar,.row.active .bar{background:var(--line)}
+.row .bar i{display:block;height:100%;background:var(--c);border-radius:3px;transition:width .3s ease}
+.row .actions{grid-area:actions;display:flex;gap:6px;align-items:center}
+.streak{display:inline-flex;align-items:center;gap:4px}
+.streak.hot{color:var(--good);font-weight:500}
+.streak svg{width:11px;height:11px}
+.empty{color:var(--muted);font-size:13px;padding:8px 6px}
+
+/* charts */
+.charts{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media (max-width:680px){.charts{grid-template-columns:1fr}}
+.chartbox{position:relative}
+.chartbox svg{display:block;width:100%;height:auto;overflow:visible}
+.chartbox text{font-family:var(--f-mono);font-size:11px;fill:var(--muted)}
+.chartbox .tick{stroke:var(--grid);stroke-width:1}
+.chartbox .base{stroke:var(--line);stroke-width:1}
+.chartbox .val{fill:var(--ink-2);font-size:11px}
+.chartbox .cat{fill:var(--ink-2);font-family:var(--f-body);font-size:11.5px}
+.chartbox .goalmark{stroke:var(--ink-2);stroke-width:1.5;stroke-dasharray:3 3}
+.tip{position:absolute;pointer-events:none;background:var(--ink);color:var(--page);font-size:12px;padding:7px 10px;border-radius:8px;box-shadow:var(--shadow);white-space:nowrap;transform:translate(-50%,calc(-100% - 10px));opacity:0;transition:opacity .12s;z-index:2}
+.tip.on{opacity:1}
+.tip b{font-family:var(--f-mono);font-weight:500}
+.tip .k{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:6px;vertical-align:-0.5px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{border:0;border-radius:0;padding:5px 10px;font-size:12.5px;background:transparent;color:var(--ink-2)}
+.seg button[aria-pressed=true]{background:var(--card-2);color:var(--ink);font-weight:600}
+.sumline{font-size:13px;color:var(--ink-2);margin-top:8px}
+
+/* log list */
+.log{display:grid;gap:0}
+.entry{display:grid;grid-template-columns:10px 1fr auto auto;gap:12px;align-items:center;padding:9px 6px;border-top:1px solid var(--grid)}
+.entry:first-child{border-top:0}
+.entry .sw{width:10px;height:10px;border-radius:2px;background:var(--c)}
+.entry .n{font-size:14px}
+.entry .n small{color:var(--muted);margin-left:8px;font-size:12.5px}
+.entry .m{font-family:var(--f-mono);font-variant-numeric:tabular-nums;color:var(--ink-2);font-size:13.5px}
+.entry .x{opacity:0}
+.entry:hover .x,.entry .x:focus-visible{opacity:1}
+
+/* dialogs */
+dialog{border:1px solid var(--line);border-radius:14px;background:var(--card);color:var(--ink);padding:0;max-width:min(520px,calc(100vw - 32px));width:100%;box-shadow:var(--shadow)}
+dialog::backdrop{background:rgba(10,16,14,.45)}
+.dlg{padding:20px 22px;display:grid;gap:14px}
+.dlg h2{font-size:17px}
+.field{display:grid;gap:5px;font-size:13px;color:var(--ink-2)}
+.field input,.field select{width:100%}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:480px){.grid2{grid-template-columns:1fr}}
+.dlg-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:4px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chips button{padding:5px 10px;font-size:13px;border-radius:999px}
+.chips button[aria-pressed=true]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.skillrow{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;padding:8px 0;border-top:1px solid var(--grid)}
+.skillrow:first-child{border-top:0}
+.skillrow .goals{font-size:12.5px;color:var(--muted)}
+.skillrow.arch{opacity:.55}
+.note{font-size:12.5px;color:var(--muted)}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--page);padding:9px 14px;border-radius:9px;font-size:13px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:9}
+.toast.on{opacity:1}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <div class="title-row"><h1>Skill Hours</h1><span id="mode-pill" class="pill local" hidden>offline copy</span></div>
+      <div class="date" id="today-label"></div>
+    </div>
+    <div class="hero">
+      <span class="big mono" id="today-total">0m</span>
+      <span class="sub" id="today-sub">logged today</span>
+    </div>
+  </header>
+
+  <div class="timerbar" id="timerbar" role="status">
+    <span class="dot" aria-hidden="true"></span>
+    <span class="what" id="timer-what"></span>
+    <span class="clock" id="timer-clock">00:00</span>
+    <span class="grow"></span>
+    <button type="button" id="timer-stop">Stop &amp; save</button>
+    <button type="button" id="timer-discard" title="Discard this session">Discard</button>
+  </div>
+
+  <section class="card">
+    <div class="card-head">
+      <div><h2>Today</h2></div>
+      <div class="right">
+        <button type="button" id="btn-log">+ Log time</button>
+        <button type="button" class="ghost" id="btn-skills">Edit skills</button>
+      </div>
+    </div>
+    <div class="rows" id="rows"></div>
+  </section>
+
+  <div class="charts">
+    <section class="card">
+      <div class="card-head"><h2>This week</h2><span class="note" id="week-range"></span></div>
+      <div class="chartbox" id="week-chart"></div>
+      <div class="sumline" id="week-sum"></div>
+    </section>
+    <section class="card">
+      <div class="card-head">
+        <h2>Daily hours</h2>
+        <div class="seg" role="group" aria-label="Range">
+          <button type="button" data-range="28" aria-pressed="true">4 wks</button>
+          <button type="button" data-range="84" aria-pressed="false">12 wks</button>
+          <button type="button" data-range="182" aria-pressed="false">6 mo</button>
+        </div>
+      </div>
+      <div class="chartbox" id="trend-chart"></div>
+      <div class="sumline" id="trend-sum"></div>
+    </section>
+  </div>
+
+  <section class="card">
+    <div class="card-head">
+      <h2 id="log-title">Today's log</h2>
+      <div class="right">
+        <button type="button" class="ghost" id="log-prev" title="Previous day">‹</button>
+        <button type="button" class="ghost" id="log-today">Today</button>
+        <button type="button" class="ghost" id="log-next" title="Next day">›</button>
+      </div>
+    </div>
+    <div class="log" id="log"></div>
+  </section>
+</div>
+
+<dialog id="dlg-log">
+  <form class="dlg" method="dialog" id="form-log">
+    <h2>Log time</h2>
+    <div class="field"><span>Skill</span><div class="chips" id="log-chips"></div></div>
+    <div class="grid2">
+      <label class="field"><span>Minutes</span><input type="number" id="log-min" min="1" max="1440" step="1" required placeholder="45"></label>
+      <label class="field"><span>Date</span><input type="date" id="log-date" required></label>
+    </div>
+    <label class="field"><span>What did you work on? (optional)</span><input type="text" id="log-note" maxlength="140" placeholder="e.g. pandas groupby exercises"></label>
+    <div class="dlg-actions"><button type="button" class="ghost" data-close>Cancel</button><button type="submit" class="primary">Save entry</button></div>
+  </form>
+</dialog>
+
+<dialog id="dlg-skills">
+  <div class="dlg">
+    <h2>Skills</h2>
+    <div id="skill-list"></div>
+    <form id="form-skill" class="field" style="gap:8px">
+      <span>Add a skill</span>
+      <div class="grid2">
+        <input type="text" id="new-skill" placeholder="e.g. R programming" maxlength="40" required>
+        <button type="submit">Add</button>
+      </div>
+    </form>
+    <div class="note">Goals are in minutes. Archived skills keep their history but leave the daily list.</div>
+    <div class="field" style="gap:8px"><span>Backup</span>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button type="button" id="btn-export">Export JSON</button>
+        <button type="button" id="btn-import">Import JSON</button>
+        <input type="file" id="import-file" accept="application/json,.json" hidden>
+      </div>
+      <div class="note">Your log lives on this device. Export now and then to keep a copy; importing merges entries without duplicating them.</div>
+    </div>
+    <div class="dlg-actions"><button type="button" class="primary" data-close>Done</button></div>
+  </div>
+</dialog>
+
+<dialog id="dlg-edit">
+  <form class="dlg" method="dialog" id="form-edit">
+    <h2>Edit skill</h2>
+    <label class="field"><span>Name</span><input type="text" id="edit-name" maxlength="40" required></label>
+    <div class="grid2">
+      <label class="field"><span>Daily goal (min)</span><input type="number" id="edit-daily" min="0" max="1440" step="5"></label>
+      <label class="field"><span>Weekly goal (min)</span><input type="number" id="edit-weekly" min="0" max="10080" step="15"></label>
+    </div>
+    <div class="dlg-actions">
+      <button type="button" class="ghost danger" id="edit-archive">Archive</button>
+      <span style="flex:1"></span>
+      <button type="button" class="ghost" data-close>Cancel</button>
+      <button type="submit" class="primary">Save</button>
+    </div>
+  </form>
+</dialog>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(() => {
+"use strict";
+// ---------- state ----------
+const S = { skills: [], days: {}, timer: null, range: 28, logDay: null, editing: null, logSkill: null };
+let db = null, LOCAL = false;
+const $ = (id) => document.getElementById(id);
+const SLOTS = ["--s1","--s2","--s3","--s4","--s5","--s6","--s7","--s8"];
+
+// ---------- date helpers (local time) ----------
+const pad = n => String(n).padStart(2,"0");
+const key = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const todayKey = () => key(new Date());
+const parseKey = k => { const [y,m,d] = k.split("-").map(Number); return new Date(y, m-1, d); };
+const addDays = (k, n) => { const d = parseKey(k); d.setDate(d.getDate()+n); return key(d); };
+const weekStart = k => { const d = parseKey(k); const dow = (d.getDay()+6)%7; d.setDate(d.getDate()-dow); return key(d); };
+const fmtMin = m => { m = Math.round(m); if (m < 60) return `${m}m`; const h = Math.floor(m/60), r = m%60; return r ? `${h}h ${r}m` : `${h}h`; };
+const fmtH = m => (m/60).toFixed(m >= 600 ? 0 : 1) + "h";
+const longDate = k => parseKey(k).toLocaleDateString(undefined, { weekday:"long", month:"long", day:"numeric" });
+const shortDate = k => parseKey(k).toLocaleDateString(undefined, { month:"short", day:"numeric" });
+const uid = () => Math.random().toString(36).slice(2,10) + Date.now().toString(36);
+
+// ---------- derived ----------
+const activeSkills = () => S.skills.filter(s => !s.archived).sort((a,b) => a.order - b.order);
+const skillById = id => S.skills.find(s => s.id === id);
+const colorOf = s => `var(${SLOTS[(s.slot ?? 0) % 8]})`;
+const entriesOn = k => (S.days[k]?.entries) || [];
+const minutesOn = (k, sid) => entriesOn(k).filter(e => !sid || e.skill === sid).reduce((a,e) => a + e.min, 0);
+function weekMinutes(sid, wk) { let t = 0; for (let i=0;i<7;i++) t += minutesOn(addDays(wk,i), sid); return t; }
+function streak(sid) {
+  const t = todayKey(); let k = minutesOn(t, sid) > 0 ? t : addDays(t,-1);
+  if (minutesOn(k, sid) === 0) return 0;
+  let n = 0; while (minutesOn(k, sid) > 0) { n++; k = addDays(k,-1); }
+  return n;
+}
+
+// ---------- storage ----------
+const LS = "skill-hours-v1";
+function localLoad() { try { const j = JSON.parse(localStorage.getItem(LS) || "null"); if (j) { S.skills = j.skills||[]; S.days = j.days||{}; S.timer = j.timer||null; } } catch {} }
+function localSave() { try { localStorage.setItem(LS, JSON.stringify({ skills:S.skills, days:S.days, timer:S.timer })); } catch {} }
+
+const DEFAULTS = ["Python exercises","Stats learning","Matlab exercises","EEG skills","MRI skills"];
+function defaultSkills() {
+  return DEFAULTS.map((name, i) => ({ id: name.toLowerCase().replace(/[^a-z0-9]+/g,"-"), name, order:i, slot:i, dailyGoal:30, weeklyGoal:180, archived:false }));
+}
+
+async function saveSkill(sk) {
+  const idx = S.skills.findIndex(s => s.id === sk.id);
+  if (idx >= 0) S.skills[idx] = sk; else S.skills.push(sk);
+  render();
+  if (LOCAL) return localSave();
+  const { id, ...body } = sk;
+  try { await db.doc("skills/" + id).set(body); } catch (e) { fail(e); }
+}
+async function saveDay(k) {
+  render();
+  if (LOCAL) return localSave();
+  const body = { entries: S.days[k]?.entries || [] };
+  try { await db.doc("days/" + k).set(body); } catch (e) { fail(e); }
+}
+async function saveTimer() {
+  render();
+  if (LOCAL) return localSave();
+  try { await db.doc("meta/timer").set(S.timer ? S.timer : { skill: null }); } catch (e) { fail(e); }
+}
+function fail(e) { console.error(e); toast(e?.code === "quota_exceeded" ? "Storage is full — delete some old days to keep logging." : "Couldn't save that — check your connection and try again."); }
+
+async function boot() {
+  try { db = await window.claude?.use?.("db"); } catch { db = null; }
+  if (!db) {
+    LOCAL = true; localLoad();
+    if (!S.skills.length) { S.skills = defaultSkills(); localSave(); }
+    render(); return;
+  }
+  db.collection("skills").onSnapshot(snap => {
+    S.skills = snap.docs.filter(d => d.exists).map(d => ({ id: d.id, ...d.data() }));
+    if (!snap.metadata.fromCache && snap.empty && !S._seeded) { S._seeded = true; defaultSkills().forEach(sk => saveSkill(sk)); }
+    render();
+  }, e => fail(e));
+  db.collection("days").limit(1000).onSnapshot(snap => {
+    const days = {}; snap.docs.forEach(d => { if (d.exists) days[d.id] = d.data(); });
+    S.days = days; render();
+  }, e => fail(e));
+  db.doc("meta/timer").onSnapshot(snap => {
+    const d = snap.exists ? snap.data() : null;
+    S.timer = d && d.skill ? { skill: d.skill, startedAt: d.startedAt } : null;
+    render();
+  }, e => fail(e));
+  render();
+}
+
+// ---------- timer ----------
+function startTimer(sid) { S.timer = { skill: sid, startedAt: Date.now() }; saveTimer(); }
+async function stopTimer(save) {
+  if (!S.timer) return;
+  const t = S.timer; S.timer = null;
+  if (save) {
+    const min = Math.max(1, Math.round((Date.now() - t.startedAt) / 60000));
+    addEntry(key(new Date(t.startedAt)), t.skill, min, "");
+    toast(`Saved ${fmtMin(min)} to ${skillById(t.skill)?.name || "skill"}`);
+  }
+  saveTimer();
+}
+function addEntry(k, sid, min, note) {
+  if (!S.days[k]) S.days[k] = { entries: [] };
+  S.days[k] = { entries: [...S.days[k].entries, { id: uid(), skill: sid, min, note, at: Date.now() }] };
+  saveDay(k);
+}
+function removeEntry(k, eid) {
+  if (!S.days[k]) return;
+  S.days[k] = { entries: S.days[k].entries.filter(e => e.id !== eid) };
+  saveDay(k);
+}
+setInterval(() => { if (S.timer) tickClock(); }, 1000);
+function tickClock() {
+  const s = Math.floor((Date.now() - S.timer.startedAt) / 1000);
+  const h = Math.floor(s/3600), m = Math.floor((s%3600)/60), r = s%60;
+  $("timer-clock").textContent = (h ? pad(h)+":" : "") + pad(m) + ":" + pad(r);
+}
+
+// ---------- render ----------
+function render() {
+  const t = todayKey();
+  if (!S.logDay) S.logDay = t;
+  $("today-label").textContent = longDate(t);
+  const todayMin = minutesOn(t);
+  $("today-total").textContent = fmtMin(todayMin);
+  const running = S.timer ? skillById(S.timer.skill) : null;
+  $("today-sub").textContent = todayMin ? `logged today across ${new Set(entriesOn(t).map(e=>e.skill)).size} skill${new Set(entriesOn(t).map(e=>e.skill)).size===1?"":"s"}` : "logged today — start a timer below";
+  $("timerbar").classList.toggle("on", !!S.timer);
+  if (S.timer) { $("timer-what").textContent = running?.name || "Skill"; tickClock(); }
+  renderRows(t);
+  renderWeek(t);
+  renderTrend(t);
+  renderLog();
+}
+
+function renderRows(t) {
+  const el = $("rows"); el.innerHTML = "";
+  const skills = activeSkills();
+  if (!skills.length) { el.innerHTML = '<div class="empty">No skills yet — add one with “Edit skills”.</div>'; return; }
+  for (const s of skills) {
+    const mins = minutesOn(t, s.id), goal = s.dailyGoal || 0, pct = goal ? Math.min(100, mins/goal*100) : 0;
+    const st = streak(s.id), wk = weekMinutes(s.id, weekStart(t));
+    const isRun = S.timer?.skill === s.id;
+    const row = document.createElement("div"); row.className = "row" + (isRun ? " active" : ""); row.style.setProperty("--c", colorOf(s));
+    row.innerHTML = `
+      <span class="sw"></span>
+      <span class="name"></span>
+      <span class="meta">
+        <span>today <b class="mono">${fmtMin(mins)}</b>${goal ? ` <span class="mono">/ ${fmtMin(goal)}</span>` : ""}</span>
+        <span>week <b class="mono">${fmtMin(wk)}</b>${s.weeklyGoal ? ` <span class="mono">/ ${fmtMin(s.weeklyGoal)}</span>` : ""}</span>
+        <span class="streak ${st>=2?"hot":""}"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M6 1c1 2 3 3 3 6a3 3 0 0 1-6 0c0-1 .5-2 1-2.5 0 1 .5 1.5 1 1.5 0-2 .5-3.5 1-5z" fill="currentColor"/></svg>${st} day${st===1?"":"s"}</span>
+      </span>
+      <span class="bar" aria-hidden="true"><i style="width:${pct}%"></i></span>
+      <span class="actions"></span>`;
+    row.querySelector(".name").textContent = s.name;
+    const act = row.querySelector(".actions");
+    const b = document.createElement("button"); b.type = "button";
+    if (isRun) { b.textContent = "Stop"; b.className = "primary"; b.onclick = () => stopTimer(true); }
+    else { b.textContent = "Start"; b.disabled = !!S.timer; b.onclick = () => startTimer(s.id); }
+    const l = document.createElement("button"); l.type = "button"; l.className = "ghost"; l.textContent = "Log"; l.title = "Log time manually"; l.onclick = () => openLog(s.id);
+    act.append(b, l); el.append(row);
+  }
+}
+
+// --- week bars ---
+function renderWeek(t) {
+  const wk = weekStart(t);
+  $("week-range").textContent = `${shortDate(wk)} – ${shortDate(addDays(wk,6))}`;
+  const skills = activeSkills();
+  const box = $("week-chart"); box.innerHTML = "";
+  if (!skills.length) return;
+  const data = skills.map(s => ({ s, v: weekMinutes(s.id, wk), g: s.weeklyGoal || 0 }));
+  const max = Math.max(60, ...data.map(d => Math.max(d.v, d.g))) * 1.12;
+  const W = 400, H = 220, padL = 34, padR = 8, padT = 14, padB = 44;
+  const iw = W - padL - padR, ih = H - padT - padB;
+  const n = data.length, slotW = iw / n, bw = Math.min(44, slotW * 0.62);
+  const y = v => padT + ih - (v / max) * ih;
+  const step = niceStep(max / 60, 3); // in hours
+  let g = "";
+  for (let h = 0; h*60 <= max + 1e-9; h += step) {
+    const yy = y(h*60);
+    g += `<line class="tick" x1="${padL}" x2="${W-padR}" y1="${yy.toFixed(1)}" y2="${yy.toFixed(1)}"/><text x="${padL-6}" y="${(yy+4).toFixed(1)}" text-anchor="end">${h}h</text>`;
+  }
+  let bars = "";
+  data.forEach((d, i) => {
+    const cx = padL + slotW*i + slotW/2, x = cx - bw/2, yv = y(d.v), h = Math.max(0, padT+ih - yv);
+    const r = Math.min(4, h);
+    const path = h > 0 ? `M${x} ${padT+ih} V${yv+r} Q${x} ${yv} ${x+r} ${yv} H${x+bw-r} Q${x+bw} ${yv} ${x+bw} ${yv+r} V${padT+ih} Z` : "";
+    bars += `<g class="bar-g" data-i="${i}">
+      <rect x="${x-slotW*0.15}" y="${padT}" width="${bw+slotW*0.3}" height="${ih}" fill="transparent"/>
+      ${path ? `<path d="${path}" fill="${colorOf(d.s)}"/>` : ""}
+      ${d.g ? `<line class="goalmark" x1="${x-4}" x2="${x+bw+4}" y1="${y(d.g).toFixed(1)}" y2="${y(d.g).toFixed(1)}"/>` : ""}
+      ${d.v ? `<text class="val" x="${cx}" y="${(yv-5).toFixed(1)}" text-anchor="middle">${fmtH(d.v)}</text>` : ""}
+      <text class="cat" x="${cx}" y="${H-padB+16}" text-anchor="middle">${esc(shortName(d.s.name))}</text>
+    </g>`;
+  });
+  box.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Hours per skill this week">${g}<line class="base" x1="${padL}" x2="${W-padR}" y1="${padT+ih}" y2="${padT+ih}"/>${bars}</svg><div class="tip"></div>`;
+  const tip = box.querySelector(".tip");
+  box.querySelectorAll(".bar-g").forEach(gEl => {
+    gEl.addEventListener("mousemove", ev => {
+      const d = data[+gEl.dataset.i]; const r = box.getBoundingClientRect();
+      tip.innerHTML = `<span class="k" style="background:${colorOf(d.s)}"></span>${esc(d.s.name)}: <b>${fmtMin(d.v)}</b>${d.g ? ` of ${fmtMin(d.g)} goal (${Math.round(d.v/d.g*100)}%)` : ""}`;
+      tip.style.left = (ev.clientX - r.left) + "px"; tip.style.top = (ev.clientY - r.top) + "px"; tip.classList.add("on");
+    });
+    gEl.addEventListener("mouseleave", () => tip.classList.remove("on"));
+  });
+  const total = data.reduce((a,d) => a+d.v, 0), goalTot = data.reduce((a,d) => a+d.g, 0);
+  const lastWk = skills.reduce((a,s) => a + weekMinutes(s.id, addDays(wk,-7)), 0);
+  $("week-sum").textContent = `${fmtMin(total)} so far` + (goalTot ? ` · ${Math.round(total/goalTot*100)}% of weekly goals` : "") + (lastWk ? ` · last week ${fmtMin(lastWk)}` : "") + (data.some(d=>d.g) ? " · dashed = goal" : "");
+}
+
+// --- trend line ---
+function renderTrend(t) {
+  const N = S.range, box = $("trend-chart"); box.innerHTML = "";
+  const days = []; for (let i = N-1; i >= 0; i--) { const k = addDays(t,-i); days.push({ k, v: minutesOn(k) }); }
+  const max = Math.max(60, ...days.map(d => d.v)) * 1.1;
+  const W = 400, H = 220, padL = 34, padR = 8, padT = 14, padB = 30;
+  const iw = W - padL - padR, ih = H - padT - padB;
+  const x = i => padL + (N === 1 ? iw/2 : i/(N-1)*iw), y = v => padT + ih - (v/max)*ih;
+  const step = niceStep(max/60, 3);
+  let g = "";
+  for (let h = 0; h*60 <= max + 1e-9; h += step) {
+    const yy = y(h*60).toFixed(1);
+    g += `<line class="tick" x1="${padL}" x2="${W-padR}" y1="${yy}" y2="${yy}"/><text x="${padL-6}" y="${(+yy+4).toFixed(1)}" text-anchor="end">${h}h</text>`;
+  }
+  // x labels: ~5 evenly
+  const labN = N <= 28 ? 4 : 5;
+  for (let j = 0; j <= labN; j++) { const i = Math.round(j*(N-1)/labN); g += `<text x="${x(i).toFixed(1)}" y="${H-padB+16}" text-anchor="${j===0?"start":j===labN?"end":"middle"}">${shortDate(days[i].k)}</text>`; }
+  const pts = days.map((d,i) => `${x(i).toFixed(1)},${y(d.v).toFixed(1)}`);
+  const line = "M" + pts.join(" L");
+  const area = line + ` L${x(N-1).toFixed(1)},${(padT+ih).toFixed(1)} L${x(0).toFixed(1)},${(padT+ih).toFixed(1)} Z`;
+  const last = days[N-1];
+  box.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Total minutes per day">
+    ${g}<line class="base" x1="${padL}" x2="${W-padR}" y1="${padT+ih}" y2="${padT+ih}"/>
+    <path d="${area}" fill="var(--accent)" opacity=".12"/>
+    <path d="${line}" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round"/>
+    <circle cx="${x(N-1).toFixed(1)}" cy="${y(last.v).toFixed(1)}" r="4" fill="var(--accent)" stroke="var(--card)" stroke-width="2"/>
+    <line id="xh" class="goalmark" x1="0" x2="0" y1="${padT}" y2="${padT+ih}" style="display:none"/>
+    <circle id="hp" r="4.5" fill="var(--accent)" stroke="var(--card)" stroke-width="2" style="display:none"/>
+    <rect x="${padL}" y="${padT}" width="${iw}" height="${ih}" fill="transparent" id="hit"/>
+  </svg><div class="tip"></div>`;
+  const svg = box.querySelector("svg"), tip = box.querySelector(".tip"), xh = box.querySelector("#xh"), hp = box.querySelector("#hp");
+  box.querySelector("#hit").addEventListener("mousemove", ev => {
+    const sr = svg.getBoundingClientRect(), sx = (ev.clientX - sr.left) / sr.width * W;
+    const i = Math.max(0, Math.min(N-1, Math.round((sx-padL)/iw*(N-1))));
+    const d = days[i];
+    xh.setAttribute("x1", x(i)); xh.setAttribute("x2", x(i)); xh.style.display = "";
+    hp.setAttribute("cx", x(i)); hp.setAttribute("cy", y(d.v)); hp.style.display = "";
+    const parts = activeSkillsAll().map(s => ({ s, v: minutesOn(d.k, s.id) })).filter(p => p.v > 0)
+      .map(p => `<div><span class="k" style="background:${colorOf(p.s)}"></span>${esc(p.s.name)} <b>${fmtMin(p.v)}</b></div>`).join("");
+    tip.innerHTML = `<div>${longDate(d.k)} · <b>${fmtMin(d.v)}</b></div>${parts}`;
+    const r = box.getBoundingClientRect();
+    tip.style.left = (x(i)/W*sr.width + sr.left - r.left) + "px"; tip.style.top = (y(d.v)/H*sr.height + sr.top - r.top) + "px"; tip.classList.add("on");
+  });
+  box.querySelector("#hit").addEventListener("mouseleave", () => { tip.classList.remove("on"); xh.style.display = "none"; hp.style.display = "none"; });
+  const tot = days.reduce((a,d) => a+d.v, 0), active = days.filter(d => d.v>0).length;
+  $("trend-sum").textContent = `${fmtMin(tot)} over ${N} days · ${active} active day${active===1?"":"s"} · avg ${fmtMin(active ? tot/active : 0)} per active day`;
+}
+const activeSkillsAll = () => S.skills.slice().sort((a,b) => a.order - b.order);
+function niceStep(maxH, target) { const raw = maxH/target; const c = [0.25,0.5,1,2,3,4,6,8,12,24]; return c.find(v => v >= raw) || 24; }
+function shortName(n) { return n.replace(/\s+(exercises|learning|skills)$/i, ""); }
+function esc(s) { return String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+
+// --- log ---
+function renderLog() {
+  const k = S.logDay, t = todayKey();
+  $("log-title").textContent = k === t ? "Today's log" : (k === addDays(t,-1) ? "Yesterday's log" : longDate(k));
+  $("log-next").disabled = k >= t;
+  const el = $("log"); el.innerHTML = "";
+  const es = entriesOn(k).slice().sort((a,b) => a.at - b.at);
+  if (!es.length) { el.innerHTML = `<div class="empty">${k === t ? "Nothing logged yet. Start a timer or log time manually." : "No entries this day."}</div>`; return; }
+  for (const e of es) {
+    const s = skillById(e.skill) || { name: "Removed skill", slot: 0 };
+    const d = document.createElement("div"); d.className = "entry"; d.style.setProperty("--c", colorOf(s));
+    d.innerHTML = `<span class="sw"></span><span class="n"></span><span class="m">${fmtMin(e.min)}</span><button type="button" class="ghost x" title="Delete entry" aria-label="Delete entry">✕</button>`;
+    const n = d.querySelector(".n"); n.textContent = s.name;
+    if (e.note) { const sm = document.createElement("small"); sm.textContent = e.note; n.append(sm); }
+    d.querySelector(".x").onclick = () => removeEntry(k, e.id);
+    el.append(d);
+  }
+}
+
+// ---------- dialogs ----------
+function openLog(sid) {
+  S.logSkill = sid || activeSkills()[0]?.id || null;
+  const chips = $("log-chips"); chips.innerHTML = "";
+  activeSkills().forEach(s => {
+    const b = document.createElement("button"); b.type = "button"; b.textContent = s.name; b.setAttribute("aria-pressed", String(s.id === S.logSkill));
+    b.onclick = () => { S.logSkill = s.id; chips.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === b))); };
+    chips.append(b);
+  });
+  $("log-date").value = S.logDay || todayKey(); $("log-date").max = todayKey();
+  $("log-min").value = ""; $("log-note").value = "";
+  $("dlg-log").showModal(); $("log-min").focus();
+}
+$("form-log").addEventListener("submit", ev => {
+  ev.preventDefault();
+  const min = parseInt($("log-min").value, 10), k = $("log-date").value;
+  if (!S.logSkill || !(min > 0) || !k) return;
+  addEntry(k, S.logSkill, min, $("log-note").value.trim());
+  S.logDay = k; $("dlg-log").close(); toast(`Logged ${fmtMin(min)}`);
+});
+$("btn-log").onclick = () => openLog(null);
+$("btn-skills").onclick = () => { renderSkillList(); $("dlg-skills").showModal(); };
+document.querySelectorAll("[data-close]").forEach(b => b.onclick = () => b.closest("dialog").close());
+
+function renderSkillList() {
+  const el = $("skill-list"); el.innerHTML = "";
+  activeSkillsAll().forEach(s => {
+    const r = document.createElement("div"); r.className = "skillrow" + (s.archived ? " arch" : "");
+    r.innerHTML = `<span class="sw" style="width:12px;height:12px;border-radius:3px;background:${colorOf(s)};display:inline-block"></span>
+      <span><span class="nm"></span><div class="goals">${s.archived ? "archived" : `${fmtMin(s.dailyGoal||0)} / day · ${fmtMin(s.weeklyGoal||0)} / week`}</div></span>
+      <span style="display:flex;gap:4px"></span>`;
+    r.querySelector(".nm").textContent = s.name;
+    const acts = r.lastElementChild;
+    if (s.archived) { const u = document.createElement("button"); u.type="button"; u.className="ghost"; u.textContent="Restore"; u.onclick = () => { saveSkill({ ...s, archived:false }); renderSkillList(); }; acts.append(u); }
+    else {
+      const e = document.createElement("button"); e.type="button"; e.className="ghost"; e.textContent="Edit"; e.onclick = () => openEdit(s); acts.append(e);
+    }
+    el.append(r);
+  });
+}
+$("form-skill").addEventListener("submit", ev => {
+  ev.preventDefault();
+  const name = $("new-skill").value.trim(); if (!name) return;
+  const used = new Set(S.skills.map(s => s.slot)); let slot = 0; while (used.has(slot) && slot < 8) slot++; if (slot >= 8) slot = S.skills.length % 8;
+  let id = name.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"") || "skill"; if (skillById(id)) id += "-" + uid().slice(0,4);
+  saveSkill({ id, name, order: S.skills.length, slot, dailyGoal: 30, weeklyGoal: 180, archived: false });
+  $("new-skill").value = ""; renderSkillList();
+});
+function openEdit(s) {
+  S.editing = s; $("edit-name").value = s.name; $("edit-daily").value = s.dailyGoal || 0; $("edit-weekly").value = s.weeklyGoal || 0;
+  $("dlg-edit").showModal();
+}
+$("form-edit").addEventListener("submit", ev => {
+  ev.preventDefault(); const s = S.editing; if (!s) return;
+  saveSkill({ ...s, name: $("edit-name").value.trim() || s.name, dailyGoal: +$("edit-daily").value || 0, weeklyGoal: +$("edit-weekly").value || 0 });
+  $("dlg-edit").close(); renderSkillList();
+});
+$("edit-archive").onclick = () => { const s = S.editing; if (!s) return; if (S.timer?.skill === s.id) stopTimer(true); saveSkill({ ...s, archived: true }); $("dlg-edit").close(); renderSkillList(); };
+
+$("timer-stop").onclick = () => stopTimer(true);
+$("timer-discard").onclick = () => stopTimer(false);
+$("log-prev").onclick = () => { S.logDay = addDays(S.logDay,-1); renderLog(); };
+$("log-next").onclick = () => { if (S.logDay < todayKey()) { S.logDay = addDays(S.logDay,1); renderLog(); } };
+$("log-today").onclick = () => { S.logDay = todayKey(); renderLog(); };
+document.querySelectorAll("[data-range]").forEach(b => b.onclick = () => { S.range = +b.dataset.range; document.querySelectorAll("[data-range]").forEach(x => x.setAttribute("aria-pressed", String(x===b))); renderTrend(todayKey()); });
+document.addEventListener("keydown", ev => { if (ev.key === "l" && !ev.metaKey && !ev.ctrlKey && !document.querySelector("dialog[open]") && !/INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName||"")) openLog(null); });
+
+// ---------- backup ----------
+$("btn-export").onclick = () => {
+  const blob = new Blob([JSON.stringify({ app:"skill-hours", exported: new Date().toISOString(), skills:S.skills, days:S.days }, null, 1)], { type:"application/json" });
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `skill-hours-${todayKey()}.json`; document.body.append(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+};
+$("btn-import").onclick = () => $("import-file").click();
+$("import-file").addEventListener("change", async ev => {
+  const f = ev.target.files[0]; if (!f) return; ev.target.value = "";
+  try {
+    const j = JSON.parse(await f.text());
+    if (!j || !Array.isArray(j.skills) || typeof j.days !== "object") throw new Error("shape");
+    let added = 0;
+    for (const sk of j.skills) if (sk && sk.id && !skillById(sk.id)) await saveSkill({ archived:false, dailyGoal:0, weeklyGoal:0, order:S.skills.length, slot:S.skills.length%8, ...sk });
+    for (const [k, d] of Object.entries(j.days)) {
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(k) || !Array.isArray(d?.entries)) continue;
+      const have = new Set(entriesOn(k).map(e => e.id)); const fresh = d.entries.filter(e => e && e.id && !have.has(e.id) && e.min > 0);
+      if (!fresh.length) continue;
+      S.days[k] = { entries: [...entriesOn(k), ...fresh] }; added += fresh.length; await saveDay(k);
+    }
+    toast(added ? `Imported ${added} entr${added===1?"y":"ies"}` : "Nothing new to import");
+    renderSkillList();
+  } catch { toast("That file isn't a Skill Hours export."); }
+});
+
+let toastT; function toast(msg) { const t = $("toast"); t.textContent = msg; t.classList.add("on"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("on"), 2600); }
+
+// roll the day over at midnight
+let lastDay = todayKey(); setInterval(() => { const k = todayKey(); if (k !== lastDay) { if (S.logDay === lastDay) S.logDay = k; lastDay = k; render(); } }, 30000);
+
+render();
+boot();
+})();
+</script>
+<script>if ("serviceWorker" in navigator) addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));</script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+{
+  "name": "Skill Hours",
+  "short_name": "Skill Hours",
+  "description": "Daily time tracker for Python, Stats, Matlab, EEG and MRI practice.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f3f5f4",
+  "theme_color": "#1f6f68",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
